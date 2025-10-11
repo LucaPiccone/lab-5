@@ -30,6 +30,7 @@ public class MongoGradeDataBase implements GradeDataBase {
     private static final String COURSE = "course";
     private static final String USERNAME = "username";
     private static final int SUCCESS_CODE = 200;
+    private static final int HTTP404 = 404;
 
     // load token from env variable.
     public static String getAPIToken() {
@@ -62,6 +63,9 @@ public class MongoGradeDataBase implements GradeDataBase {
                         .course(grade.getString(COURSE))
                         .grade(grade.getInt(GRADE))
                         .build();
+            } else if (responseBody.getInt(STATUS_CODE) == HTTP404) {
+                System.out.println("No grade found for " + username + " in " + course);
+                return null;
             }
             else {
                 throw new RuntimeException("Grade could not be found for course: " + course
@@ -247,10 +251,6 @@ public class MongoGradeDataBase implements GradeDataBase {
     }
 
     @Override
-    // TODO Task 3b: Implement this method
-    //       Hint: Read the Grade API documentation for getMyTeam (link below) and refer to the above similar
-    //             methods to help you write this code (copy-and-paste + edit as needed).
-    //             https://www.postman.com/cloudy-astronaut-813156/csc207-grade-apis-demo/folder/isr2ymn/get-my-team
     public Team getMyTeam() {
         final OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -263,11 +263,27 @@ public class MongoGradeDataBase implements GradeDataBase {
 
         final Response response;
         final JSONObject responseBody;
+        try {
+            response = client.newCall(request).execute();
+            responseBody = new JSONObject(response.body().string());
+            if (responseBody.getInt(STATUS_CODE) == SUCCESS_CODE) {
+                final JSONObject team = responseBody.getJSONObject("team");
+                final JSONArray membersArray = team.getJSONArray("members");
+                final String[] members = new String[membersArray.length()];
+                for (int i = 0; i < membersArray.length(); i++) {
+                    members[i] = membersArray.getString(i);
+                }
 
-        // TODO Task 3b: Implement the logic to get the team information
-        // HINT 1: Look at the formTeam method to get an idea on how to parse the response
-        // HINT 2: You may find it useful to just initially print the contents of the JSON
-        //         then work on the details of how to parse it.
+                return Team.builder()
+                        .name(team.getString(NAME))
+                        .members(members)
+                        .build();
+            }
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 }
