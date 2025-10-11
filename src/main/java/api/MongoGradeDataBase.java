@@ -30,6 +30,7 @@ public class MongoGradeDataBase implements GradeDataBase {
     private static final String COURSE = "course";
     private static final String USERNAME = "username";
     private static final int SUCCESS_CODE = 200;
+    private static final int HTTP404 = 404;
 
     // load token from env variable.
     public static String getAPIToken() {
@@ -62,11 +63,13 @@ public class MongoGradeDataBase implements GradeDataBase {
                         .course(grade.getString(COURSE))
                         .grade(grade.getInt(GRADE))
                         .build();
+            } else if (responseBody.getInt(STATUS_CODE) == HTTP404) {
+                System.out.println("No grade found for " + username + " in " + course);
+                return null;
             }
             else {
-                return null;
-//                throw new RuntimeException("Grade could not be found for course: " + course
-//                                           + " and username: " + username);
+                throw new RuntimeException("Grade could not be found for course: " + course
+                                           + " and username: " + username);
             }
         }
         catch (IOException | JSONException event) {

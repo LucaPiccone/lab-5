@@ -26,7 +26,6 @@ public final class GetAverageGradeUseCase {
 
         final Team team = gradeDataBase.getMyTeam();
         String[] members = team.getMembers();
-        GetGradeUseCase getGrade = new GetGradeUseCase(gradeDataBase);
         for (String member : members) {
             Grade grade = gradeDataBase.getGrade(member, course);
             if (grade != null) {
