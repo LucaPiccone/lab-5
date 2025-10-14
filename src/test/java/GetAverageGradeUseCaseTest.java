@@ -6,6 +6,8 @@ import usecase.GetAverageGradeUseCase;
 import entity.Grade;
 import entity.Team;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -30,7 +32,7 @@ public class GetAverageGradeUseCaseTest {
     }
 
     @Test
-    void testGetAverageGrade() {
+    void testGetAverageGrade() throws IOException {
         // Act
         float result = getAverageGradeUseCase.getAverageGrade("CSC207");
 

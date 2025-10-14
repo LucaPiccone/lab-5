@@ -4,6 +4,8 @@ import api.GradeDataBase;
 import entity.Grade;
 import entity.Team;
 
+import java.io.IOException;
+
 /**
  * GetTopGradeUseCase class.
  */
@@ -19,7 +21,7 @@ public final class GetTopGradeUseCase {
      * @param course The course.
      * @return The top grade.
      */
-    public float getTopGrade(String course) {
+    public float getTopGrade(String course) throws IOException {
         // Call the API to get the usernames of all your team members
         float max = 0;
         final Team team = gradeDataBase.getMyTeam();

@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,13 +22,8 @@ import org.json.JSONException;
 import api.MongoGradeDataBase;
 import app.Config;
 import entity.Grade;
-import usecase.FormTeamUseCase;
-import usecase.GetAverageGradeUseCase;
-import usecase.GetGradeUseCase;
-import usecase.JoinTeamUseCase;
-import usecase.LeaveTeamUseCase;
-import usecase.LogGradeUseCase;
-
+import usecase.*;
+import usecase.GetTopGradeUseCase;
 /**
  * GUI class to run the GUI for the Grade App.
  */
@@ -55,7 +51,7 @@ public class Application {
         final JoinTeamUseCase joinTeamUseCase = config.joinTeamUseCase();
         final LeaveTeamUseCase leaveTeamUseCase = config.leaveTeamUseCase();
         final GetAverageGradeUseCase getAverageGradeUseCase = config.getAverageGradeUseCase();
-
+        final GetTopGradeUseCase getTopGradeUseCase = config.getTopGradeUseCase();
         // this is the code that runs to set up our GUI
         SwingUtilities.invokeLater(() -> {
             final JFrame frame = new JFrame("Grade GUI App");
@@ -330,6 +326,7 @@ public class Application {
         final JTextField courseField = new JTextField(20);
         // make a separate line.
         final JButton getAverageButton = new JButton("Get Average Grade");
+        final JButton getTopButton = new JButton("Get Top Grade");
         // TODO Task 4: Add another button for "Get Top Grade" (check the getAverageButton for example)
 
         final JButton leaveTeamButton = new JButton("Leave Team");
@@ -352,11 +349,24 @@ public class Application {
                 }
                 catch (JSONException ex) {
                     JOptionPane.showMessageDialog(jFrame, ex.getMessage());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
 
-        // TODO Task 4: Add action listener for getTopGrade button, follow example of getAverageButton
+        getTopButton.addActionListener(e -> {
+            final String course = courseField.getText();
+            try {
+                final float top = getTopGradeUseCase.getTopGrade(course);
+                JOptionPane.showMessageDialog(jFrame, "Top Grade: " + top);
+                courseField.setText("");
+            } catch (JSONException ex) {
+                JOptionPane.showMessageDialog(jFrame, ex.getMessage());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         leaveTeamButton.addActionListener(new ActionListener() {
             /**

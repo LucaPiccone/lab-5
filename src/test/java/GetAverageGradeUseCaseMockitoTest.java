@@ -1,4 +1,5 @@
-import api.GradeDataBase;
+import
+        api.GradeDataBase;
 import entity.Grade;
 import entity.Team;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import usecase.GetAverageGradeUseCase;
+
+import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +35,7 @@ public class GetAverageGradeUseCaseMockitoTest {
     }
 
     @Test
-    void testGetAverageGrade() {
+    void testGetAverageGrade() throws IOException {
         // Build an array of Grades.
         Grade[] expectedTeammember1Grades = new Grade[3];
         expectedTeammember1Grades[0] = Grade.builder()
