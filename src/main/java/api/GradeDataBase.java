@@ -5,6 +5,8 @@ import org.json.JSONException;
 import entity.Grade;
 import entity.Team;
 
+import java.io.IOException;
+
 /**
  * GradeDB is an interface that defines the methods that the GradeDB class must implement.
  */
@@ -55,7 +57,7 @@ public interface GradeDataBase {
      * @return the team that the student is in.
      * @throws JSONException if an error occurs.
      */
-    Team getMyTeam() throws JSONException;
+    Team getMyTeam() throws JSONException, IOException;
 
     /**
      * A method that leaves the team that the student is in.
